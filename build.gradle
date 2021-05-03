@@ -3,6 +3,9 @@ plugins {
     id("java")
 }
 
+version = "0.1"
+group = "com.playground.proto"
+
 repositories {
     mavenCentral()
 }
@@ -54,14 +57,24 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-//publishing {
-//    publications {
-//        mavenJava(MavenPublication) {
-//            version "${release_version}"
-//            from components.java
-//            artifact (sourcesJar) {
-//                classifier = "sources"
-//            }
-//        }
-//    }
-//}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            version "${release_version}"
+            from components.java
+            artifact (sourcesJar) {
+                classifier = "sources"
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/rauligs/grpc-playground-proto"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
